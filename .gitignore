@@ -1,0 +1,9 @@
+api/.env
+web/.env
+
+# Go build output
+api/server
+
+# React build output
+web/dist/
+web/node_modules/

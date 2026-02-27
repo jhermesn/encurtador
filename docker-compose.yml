@@ -1,0 +1,9 @@
+services:
+  api:
+    build: .
+    network_mode: host
+    env_file: api/.env
+    restart: unless-stopped
+    labels:
+      logging: "promtail"
+      service: "encurtador"
