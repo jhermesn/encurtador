@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import ShortenerForm from './components/ShortenerForm'
 import PasswordGate from './components/PasswordGate'
 import ManagePage from './components/ManagePage'
+import NotFound from './components/NotFound'
 
 function Header() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/" element={<ShortenerForm />} />
             <Route path="/gate/:slug" element={<PasswordGate />} />
             <Route path="/manage/:slug" element={<ManagePage />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
