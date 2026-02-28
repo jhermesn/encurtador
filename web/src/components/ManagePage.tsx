@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { expireURL } from '../api/urls'
+import { translateError } from '../utils/errors'
 
 export default function ManagePage() {
   const { slug }  = useParams<{ slug: string }>()
@@ -18,7 +19,7 @@ export default function ManagePage() {
       await expireURL(slug!, token)
       setExpired(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Algo deu errado')
+      setError(err instanceof Error ? translateError(err.message) : 'Algo deu errado.')
     } finally {
       setLoading(false)
     }
