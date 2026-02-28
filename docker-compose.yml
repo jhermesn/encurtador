@@ -1,9 +1,15 @@
 services:
   api:
     build: .
-    network_mode: host
+    container_name: encurtador-go
     env_file: api/.env
     restart: unless-stopped
+    networks:
+      - homelab
     labels:
       logging: "promtail"
       service: "encurtador"
+
+networks:
+  homelab:
+    external: true

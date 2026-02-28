@@ -75,7 +75,7 @@ func main() {
 	defer cancel()
 	go svc.RunCleanup(appCtx)
 
-	r := buildRouter(h, cfg.CORSAllowedOrigin)
+	r := buildRouter(h, cfg.CORSAllowedOrigin, cfg.FrontendURL)
 
 	srv := &http.Server{
 		Addr:    ":" + cfg.AppPort,
@@ -121,7 +121,7 @@ func newJSONLogger() *slog.Logger {
 	return slog.New(handler).With("service", serviceName)
 }
 
-func buildRouter(h *handler.URLHandler, corsOrigin string) *gin.Engine {
+func buildRouter(h *handler.URLHandler, corsOrigin, frontendURL string) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
 	r.SetTrustedProxies([]string{defaultTrustedProxy})
@@ -139,12 +139,19 @@ func buildRouter(h *handler.URLHandler, corsOrigin string) *gin.Engine {
 	// the same per-IP budget.
 	rl := middleware.NewRateLimiter()
 
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, frontendURL)
+	})
+
 	api := r.Group(apiV1BasePath)
 	{
 		api.POST("/urls", h.CreateURL)
 		api.GET("/urls/check/:slug", h.CheckSlug)
 		api.POST("/urls/:slug/unlock", rl, h.UnlockURL)
 		api.POST("/urls/:slug/expire", h.ExpireURL)
+		api.GET("/health", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"status": "ok"})
+		})
 	}
 
 	r.GET("/:slug", rl, h.RedirectOrGate)

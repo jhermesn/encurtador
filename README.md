@@ -118,7 +118,7 @@ sequenceDiagram
             Gin-->>Browser: 301 to target_url or 302 to gate
         else not found or expired
             MySQL-->>Gin: no rows
-            Gin-->>Browser: 404
+            Gin-->>Browser: 302 to jhermesn.dev/encurtador/404
         end
     end
 ```
@@ -171,7 +171,7 @@ sequenceDiagram
 |---|---|---|---|
 | `POST` | `/api/v1/urls` | `{target_url, slug?, ttl, password?}` | `201 {slug, short_url, expires_at, protected, manage_token}` |
 | `GET`  | `/api/v1/urls/check/:slug` | - | `200 {available, suggestion?}` |
-| `GET`  | `/:slug` | - | `301` redirect, `302` to frontend gate page, or `404` |
+| `GET`  | `/:slug` | - | `301` redirect, `302` to frontend gate page, or `302` to frontend `/404` |
 | `POST` | `/api/v1/urls/:slug/unlock` | `{password}` | `200 {target_url}` or `401` |
 | `POST` | `/api/v1/urls/:slug/expire` | `{manage_token}` | `200` or `401` |
 
@@ -192,7 +192,7 @@ Rate limiting (60 req/min per IP, shared counter across redirect + unlock) appli
 | `BASE_URL` | ✓ | - | Public base URL without trailing slash, e.g. `https://encurtador.jhermesn.dev` |
 | `APP_PORT` | - | `8080` | Port to listen on |
 | `CORS_ALLOWED_ORIGIN` | - | `https://jhermesn.dev` | Origin allowed to make cross-origin requests |
-| `FRONTEND_URL` | - | `https://jhermesn.dev/encurtador` | Frontend base path; used when redirecting to the password gate |
+| `FRONTEND_URL` | - | `https://jhermesn.dev/encurtador` | Frontend base path; used when redirecting to the password gate or the `/404` page |
 
 ### Frontend (`web/.env`)
 
