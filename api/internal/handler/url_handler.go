@@ -117,7 +117,7 @@ func (h *URLHandler) RedirectOrGate(c *gin.Context) {
 		return
 	}
 	if cached == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "URL not found or expired"})
+		c.Redirect(http.StatusFound, h.frontendURL+"/404")
 		return
 	}
 
