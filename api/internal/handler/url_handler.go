@@ -130,7 +130,7 @@ func (h *URLHandler) RedirectOrGate(c *gin.Context) {
 }
 
 type unlockRequest struct {
-	Password string `json:"password" binding:"required"`
+	Password string `json:"password"`
 }
 
 func (h *URLHandler) UnlockURL(c *gin.Context) {
