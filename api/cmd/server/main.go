@@ -75,7 +75,7 @@ func main() {
 	defer cancel()
 	go svc.RunCleanup(appCtx)
 
-	r := buildRouter(h, cfg.CORSAllowedOrigin)
+	r := buildRouter(h, cfg.CORSAllowedOrigin, cfg.FrontendURL)
 
 	srv := &http.Server{
 		Addr:    ":" + cfg.AppPort,
@@ -121,7 +121,7 @@ func newJSONLogger() *slog.Logger {
 	return slog.New(handler).With("service", serviceName)
 }
 
-func buildRouter(h *handler.URLHandler, corsOrigin string) *gin.Engine {
+func buildRouter(h *handler.URLHandler, corsOrigin, frontendURL string) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
 	r.SetTrustedProxies([]string{defaultTrustedProxy})
@@ -138,6 +138,10 @@ func buildRouter(h *handler.URLHandler, corsOrigin string) *gin.Engine {
 	// routes so that enumeration attempts and password guesses count toward
 	// the same per-IP budget.
 	rl := middleware.NewRateLimiter()
+
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, frontendURL)
+	})
 
 	api := r.Group(apiV1BasePath)
 	{
