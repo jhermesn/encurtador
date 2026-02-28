@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createURL, checkSlug, type CreateURLResponse } from '../api/urls'
 import ResultCard from './ResultCard'
+import { translateError } from '../utils/errors'
 
 const TTL_OPTIONS = [
   { value: '1h',    label: '1 Hora'   },
@@ -66,7 +67,7 @@ export default function ShortenerForm() {
       })
       setResult(res)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Algo deu errado')
+      setError(err instanceof Error ? translateError(err.message) : 'Algo deu errado.')
     } finally {
       setLoading(false)
     }
