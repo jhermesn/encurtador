@@ -145,6 +145,9 @@ func buildRouter(h *handler.URLHandler, corsOrigin string) *gin.Engine {
 		api.GET("/urls/check/:slug", h.CheckSlug)
 		api.POST("/urls/:slug/unlock", rl, h.UnlockURL)
 		api.POST("/urls/:slug/expire", h.ExpireURL)
+		api.GET("/health", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"status": "ok"})
+		})
 	}
 
 	r.GET("/:slug", rl, h.RedirectOrGate)
